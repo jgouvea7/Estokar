@@ -8,13 +8,13 @@ export class User {
     @Prop({default: () => crypto.randomUUID() })
     _id: string;
 
-    @Prop({ type: String })
+    @Prop({ type: String, required: true })
     name: string;
 
-    @Prop({ type: String })
+    @Prop({ type: String, required: true })
     email: string;
 
-    @Prop({ type: String })
+    @Prop({ type: String, required: true })
     password: string;
 
     @Prop({ type: Date })

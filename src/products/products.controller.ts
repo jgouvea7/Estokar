@@ -23,13 +23,19 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  updateProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  updateProduct(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
     return this.productsService.updateProduct(id, updateProductDto);
   }
 
-  @Patch(':id')
-  updateStock(@Param('id') id: string, @Body() quantity: number) {
-    //return this.productsService.updateStock()
+  @Patch(':id/stock')
+  updateStock(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
+    return this.productsService.updateStock(id, updateProductDto);
   }
 
   @Delete(':id')

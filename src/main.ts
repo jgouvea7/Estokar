@@ -11,7 +11,7 @@ async function bootstrap() {
     options: {
       client: {
         clientId: 'inventory-app',
-        brokers: ['localhist:9092']
+        brokers: ['localhost:9092']
       },
       consumer: {
         groupId: 'inventory-main'

@@ -1,25 +1,40 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product, ProductStatus } from './entities/product.entity';
 import { Model } from 'mongoose';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class ProductsService {
 
   constructor(
-    @InjectModel(Product.name) private productSchema: Model<Product>
+    @InjectModel(Product.name) private productSchema: Model<Product>,
+    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ){}
 
-  create(createProductDto: CreateProductDto) {
-    return this.productSchema.create({
+  async create(createProductDto: CreateProductDto) {
+
+    const createdProduct = await this.productSchema.create({
       userId: createProductDto.userId,
       name: createProductDto.name,
       description: createProductDto.description,
       stock: createProductDto.stock,
       productStatus: ProductStatus.AVAILABLE
     })
+
+    this.kafkaClient.emit('product-created',{
+      value: JSON.stringify({
+        userId: createProductDto.userId,
+        name: createProductDto.name,
+        description: createProductDto.description,
+        stock: createProductDto.stock,
+        typeCreate: 'CREATE'
+      })
+    });
+
+    return createdProduct;
   }
 
   findAll() {
@@ -30,15 +45,35 @@ export class ProductsService {
     return this.productSchema.findById({ _id: id });
   }
 
-  updateProduct(id: string, updateProductDto: UpdateProductDto) {
-    return this.productSchema.findByIdAndUpdate(
-      { _id: id },
-      {
-        name: updateProductDto.name,
-        description: updateProductDto.description,
-      },
-      { new: true }
-    );
+  async updateProduct(id: string, updateProductDto: UpdateProductDto) {
+    const product = await this.productSchema.findById(id);
+    
+    if(!product){
+      throw new NotFoundException("Product not found");
+    }
+
+    const changes: Record<string, {old: any; new: any}> = {};
+    if (updateProductDto.name && updateProductDto.name !== product.name) {
+      changes.name = { old: product.name, new: updateProductDto.name};
+    }
+    if (updateProductDto.description && updateProductDto.description !== product.description) {
+      changes.description = { old: product.description, new: updateProductDto.description };
+    }
+
+    const updateProduct = await this.productSchema.findByIdAndUpdate(id, updateProductDto, {new :true})
+
+    if (Object.keys(changes).length > 0) {
+      this.kafkaClient.emit('product-updated', {
+        value: JSON.stringify({
+          productId: id,
+          userId: updateProductDto.userId,
+          changes,
+          typeUpdate: 'UPDATE'
+        })
+      });
+    }
+
+    return updateProduct;
   }
 
   async updateStock(id: string, updateProductDto: UpdateProductDto){
@@ -90,6 +125,5 @@ export class ProductsService {
     return result;
 
   }
-
   
 }

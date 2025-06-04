@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
+import { User } from "src/users/entities/user.entity";
 
 export type ProductDocument = HydratedDocument<Product>
 
@@ -15,7 +16,7 @@ export class Product {
     _id: string;
 
     // Terminar depois que fizer usuario
-    @Prop({ type: String, ref: 'User'})
+    @Prop({ type: String, ref: User.name })
     userId: string;
 
     @Prop({ type: String })
@@ -27,7 +28,7 @@ export class Product {
     @Prop({ type: Number })
     stock: number;
 
-    @Prop()
+    @Prop({ enum: ProductStatus, required: true})
     productStatus: ProductStatus
 }
 

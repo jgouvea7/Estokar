@@ -1,34 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
 import { OperationsService } from './operations.service';
 import { CreateOperationDto } from './dto/create-operation.dto';
-import { UpdateOperationDto } from './dto/update-operation.dto';
+
 
 @Controller('operations')
 export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
 
-  @Post()
-  create(@Body() createOperationDto: CreateOperationDto) {
-    return this.operationsService.create(createOperationDto);
-  }
+  @Post('/sendOperation')
+  async sendOperation(@Body() createOperationDto: CreateOperationDto) {
+    
+    const response = await this.operationsService.validateOperation(createOperationDto.productId, createOperationDto.quantity)
 
-  @Get()
-  findAll() {
-    return this.operationsService.findAll();
+    if (response === true) {
+      const operation = await this.operationsService.operationProduct(createOperationDto);
+      return {
+        message: 'Operation concluide',
+        orderId: operation._id
+      }
+    } else {
+      throw new BadRequestException('insufficient stock');
+    }
+    
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.operationsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOperationDto: UpdateOperationDto) {
-    return this.operationsService.update(+id, updateOperationDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.operationsService.remove(+id);
-  }
+  
 }
