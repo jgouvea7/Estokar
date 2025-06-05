@@ -86,8 +86,12 @@ export class ProductsService {
 
     const newStock = updateProductDto.stock;
     const updateStatus = newStock > 0 ? ProductStatus.AVAILABLE : ProductStatus.SOLD_OUT
+    const changes: Record<string, {old: any; new: any;}> = {};
+    if (updateProductDto.stock && updateProductDto.stock !== product.stock) {
+      changes.stock = { old: product.stock, new: newStock}
+    }
 
-    return await this.productSchema.findOneAndUpdate(
+    const updateStock =  await this.productSchema.findOneAndUpdate(
       { _id: id },
       {
         $set: {
@@ -97,10 +101,34 @@ export class ProductsService {
       },
       { new: true }   
     )
+
+    this.kafkaClient.emit('product-stock-updated', {
+      value: JSON.stringify({
+        productId: id,
+        userId: updateProductDto.userId,
+        changes,
+        typeUpdate: 'UPDATE_STOCK'
+      })
+    })
+
+    return updateStock;
   }
 
-  remove(id: string) {
-    return this.productSchema.deleteOne({ _id: id });
+  async remove(productId: string, userId: string) {
+    const deleteProduct = await this.productSchema.findByIdAndDelete({
+      _id: productId,
+      userId: userId,
+    });
+
+    this.kafkaClient.emit('product-deleted', {
+      value: JSON.stringify({
+        productId: productId,
+        userId: userId,
+        typeDelete: 'DELETE'
+      })
+    })
+
+    return deleteProduct;
   }
 
   async decreaseStock(id: string, quantity: number){
@@ -121,9 +149,7 @@ export class ProductsService {
         }
       }
     )
-
     return result;
-
   }
   
 }

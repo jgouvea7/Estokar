@@ -30,7 +30,7 @@ export class ProductsController {
     return this.productsService.updateProduct(id, updateProductDto);
   }
 
-  @Patch(':id/stock')
+  @Patch('/update-stock/:id')
   updateStock(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -39,7 +39,9 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(id);
+  remove(@Param('id') id: string,
+         @Body('userId') userId: string,
+  ) {
+    return this.productsService.remove(id, userId);
   }
 }
