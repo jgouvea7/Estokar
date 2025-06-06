@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller('products')
 export class ProductsController {
@@ -43,5 +44,13 @@ export class ProductsController {
          @Body('userId') userId: string,
   ) {
     return this.productsService.remove(id, userId);
+  }
+
+  @EventPattern('operation-created')
+  async handleOperationCreated(@Payload() message: any) {
+    
+    const result = await this.productsService.decreaseStock(message.productId, message.quantity)
+
+    return result;
   }
 }

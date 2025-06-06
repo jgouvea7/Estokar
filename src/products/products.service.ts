@@ -132,6 +132,7 @@ export class ProductsService {
   }
 
   async decreaseStock(id: string, quantity: number){
+
     const product = await this.productSchema.findById(id)
 
     if (!product){

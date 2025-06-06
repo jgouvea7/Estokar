@@ -1,4 +1,4 @@
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, Get, Param } from '@nestjs/common';
 import { OperationsService } from './operations.service';
 import { CreateOperationDto } from './dto/create-operation.dto';
 
@@ -7,7 +7,7 @@ import { CreateOperationDto } from './dto/create-operation.dto';
 export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
 
-  @Post('/sendOperation')
+  @Post('/send-operation')
   async sendOperation(@Body() createOperationDto: CreateOperationDto) {
     
     const response = await this.operationsService.validateOperation(createOperationDto.productId, createOperationDto.quantity)
@@ -22,6 +22,12 @@ export class OperationsController {
       throw new BadRequestException('insufficient stock');
     }
     
+  }
+
+  @Get(':id')
+  async validateOrder(@Param() productId: string) {
+    const quantity: number = 5;
+    this.operationsService.validateOperation(productId, quantity)
   }
   
 }

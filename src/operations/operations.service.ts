@@ -44,7 +44,7 @@ export class OperationsService {
 
   async validateOperation(productId: string, quantity: number) {
     const response = await firstValueFrom(
-      this.httpService.get(`http://localhost:3000/products/${productId}`)
+      this.httpService.get(`http://localhost:3001/products/${productId}`)
     )
 
     const product = response.data;
