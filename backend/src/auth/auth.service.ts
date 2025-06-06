@@ -17,7 +17,7 @@ export class AuthService {
   async singIn(email: string, password: string): Promise<any> {
 
     const response = await firstValueFrom(
-      this.httpService.get(`http://localhost:3000/users/${email}`)
+      this.httpService.get(`http://localhost:3001/users/${email}`)
     );
 
     const user = response.data;

@@ -19,6 +19,7 @@ async function bootstrap() {
     },
   });
 
+  await app.enableCors("localhost:3000")
   await app.startAllMicroservices();
   await app.listen(3001);
 }
