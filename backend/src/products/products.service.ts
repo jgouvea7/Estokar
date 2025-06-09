@@ -41,6 +41,10 @@ export class ProductsService {
     return this.productSchema.find();
   }
 
+  findByUser(userId: string){
+    return this.productSchema.find({ userId })
+  }
+
   findOne(id: string) {
     return this.productSchema.findById({ _id: id });
   }

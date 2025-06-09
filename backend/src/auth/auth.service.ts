@@ -28,7 +28,7 @@ export class AuthService {
 
     const match = await bcrypt.compare(password, user.password)
     if (match) {
-      return await this.generatedToken(user);
+      return await this.generatedToken({ email: user.email, id: user.id });
     }
 
     throw new UnauthorizedException("Email or password incorrect")
@@ -38,11 +38,12 @@ export class AuthService {
   async generatedToken(payload: JwtPayloadDto) {
     return {
       access_token: this.jwtService.sign(
-        { email: payload.email },
+        { email: payload.email, sub: payload.id },
         {
           secret: 'secretPassword'
         }
       )
+      
     }
   }
 }

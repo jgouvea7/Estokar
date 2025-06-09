@@ -5,6 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './entities/product.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { User, UserSchema } from 'src/users/entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports:[
@@ -31,7 +33,8 @@ import { User, UserSchema } from 'src/users/entities/user.entity';
           },
         },
       },
-    ])
+    ]),
+    AuthModule,
   ],
   controllers: [ProductsController],
   providers: [ProductsService],

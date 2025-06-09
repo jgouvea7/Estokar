@@ -11,17 +11,24 @@ export default function NewProductPage() {
     const [description, setDescription] = useState('');
     const [stock, setStock] = useState('');
 
+
     async function newProduct(e: React.FormEvent) {
         e.preventDefault()
 
+        const token = await localStorage.getItem('token');
+
+
         const response = await fetch('http://localhost:3001/products', {
             method: 'POST',
-            headers: { 'Content-type': 'application/json' }, // Corrigido typo aqui
+            headers: { 
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${token}`
+             },
             body: JSON.stringify({ name, description, stock })
         })
 
         if (response.ok) {
-            router.push('/user/home')
+            router.push('/user/stock')
         }
     }
 
@@ -38,13 +45,12 @@ export default function NewProductPage() {
                         placeholder="Nome"
                         className="outline-none border rounded-md border-zinc-400 py-2 px-3 w-full"
                     />
-                    <input
-                        type="text"
+                    <textarea
                         name="description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Descrição"
-                        className="outline-none border rounded-md border-zinc-400 py-2 px-3 w-full"
+                        className="outline-none border rounded-md border-zinc-400 py-2 px-3 w-full h-28 resize-none"
                     />
                     <input
                         type="number"

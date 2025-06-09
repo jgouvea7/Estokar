@@ -83,7 +83,7 @@ export default function SideBar() {
         <nav className="p-4">
           <ul>
             <li
-              className={`mb-2 hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
+              className={`hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
                 isCollapsed ? "justify-center" : "gap-3"
               }`}
             >
@@ -99,6 +99,67 @@ export default function SideBar() {
             </li>
           </ul>
         </nav>
+
+        <nav className="p-4">
+          <ul>
+            <li
+              className={`hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
+                isCollapsed ? "justify-center" : "gap-3"
+              }`}
+            >
+              <Link
+                href="/user/operation"
+                className={`flex items-center ${
+                  isCollapsed ? "justify-center w-full" : "gap-3"
+                }`}
+              >
+                <span className="material-icons text-[34px]">store</span>
+                {!isCollapsed && <span>Operação</span>}
+              </Link>
+            </li>
+          </ul>          
+        </nav>
+
+        <nav className="p-4">
+          <ul>
+            <li
+              className={`hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
+                isCollapsed ? "justify-center" : "gap-3"
+              }`}
+            >
+              <Link
+                href="/user/stock"
+                className={`flex items-center ${
+                  isCollapsed ? "justify-center w-full" : "gap-3"
+                }`}
+              >
+                <span className="material-icons text-[34px]">inventory</span>
+                {!isCollapsed && <span>Estoque</span>}
+              </Link>
+            </li>
+          </ul>          
+        </nav>
+
+        <nav className="p-4">
+          <ul>
+            <li
+              className={`mb-2 hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
+                isCollapsed ? "justify-center" : "gap-3"
+              }`}
+            >
+              <Link
+                href="/user/logs"
+                className={`flex items-center ${
+                  isCollapsed ? "justify-center w-full" : "gap-3"
+                }`}
+              >
+                <span className="material-icons text-[34px]">description</span>
+                {!isCollapsed && <span>Logs</span>}
+              </Link>
+            </li>
+          </ul>          
+        </nav>
+        
       </div>
 
       <div className="relative p-4" ref={configRef}>
