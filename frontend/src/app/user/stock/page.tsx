@@ -80,25 +80,26 @@ export default function StockPage() {
       <main className="ml-16 p-6 w-full">
         <h1 className="text-2xl font-bold mb-6">Estoque</h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-6">
           {products.map(product => (
-            <div key={product.id} className="bg-white shadow-md rounded-lg p-4 border">
+            <div key={product.id} className="bg-white shadow-md rounded-lg p-4">
               <h2 className="text-xl font-semibold">{product.name}</h2>
               <p className="text-gray-600">{product.description}</p>
+              <strong>Estoque:</strong> <span>{product.stock}</span>
               <p className={`font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                Estoque: {product.stock}
+                {product.stock > 0 ? 'Disponível' : 'Esgotado'}
               </p>
 
-              <div className="mt-4 flex gap-3">
+              <div className="mt-5 flex gap-3">
                 <Link
                   href={`/user/edit-product/${product.id}`}
-                  className="flex-1 text-center py-1 w-30 bg-blue-500 hover:bg-blue-600 text-white rounded"
+                  className="flex-1 text-center py-1  bg-blue-500 hover:bg-blue-600 text-white font-bold rounded"
                 >
                   Editar
                 </Link>
                 <button
                   onClick={() => handleDelete(product.id)}
-                  className="flex-1 py-1 w-10 bg-red-300 hover:bg-red-400 text-white rounded"
+                  className="flex-1 py-1 bg-red-400  text-amber-50 hover:bg-red-500  font-bold cursor-pointer rounded"
                 >
                   Excluir
                 </button>

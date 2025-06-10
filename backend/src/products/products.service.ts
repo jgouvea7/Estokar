@@ -157,4 +157,19 @@ export class ProductsService {
     return result;
   }
   
+  async getDashboardSummary(){
+
+    const product = await this.productSchema.find()
+
+    const totalProducts = product.length;
+    const totalStock = product.reduce((sum, p) => sum + p.stock, 0);
+    const outOfStock = product.filter(p => p.stock === 0).length;
+
+    return {
+      totalProducts,
+      totalStock,
+      outOfStock,
+    };
+  }
+
 }

@@ -66,8 +66,6 @@ export class LogsController {
 
   @EventPattern('product-deleted')
   async handleProductDeleted(@Payload() message: any){
-    console.log(message)
-
     await this.logsService.createFromProductDelete({
       productId: message.productId,
       userId: message.userId,

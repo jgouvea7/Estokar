@@ -10,30 +10,27 @@ export class OperationsController {
 
   @Post('/send-operation')
   async sendOperation(@Body() createOperationDto: CreateOperationDto) {
-    
-    const response = await this.operationsService.validateOperation(createOperationDto.productId, createOperationDto.quantity)
+    const isValid = await this.operationsService.validateOperation(
+      createOperationDto.productId,
+      createOperationDto.quantity
+    );
 
-    if (response === true) {
-      const operation = await this.operationsService.operationProduct(createOperationDto);
-      return {
-        message: 'Operation concluide',
-        orderId: operation._id
-      }
-    } else {
-      throw new BadRequestException('insufficient stock');
+     if (!isValid) {
+      throw new BadRequestException('Estoque insuficiente');
     }
     
+    const operation = await this.operationsService.operationProduct(createOperationDto);
+
+    return {
+      message: 'Operação criada com sucesso',
+      operationId: operation._id,
+    };
   }
 
-  @Get(':id')
-  async validateOrder(@Param() productId: string) {
-    const quantity: number = 5;
-    this.operationsService.validateOperation(productId, quantity)
-  }
 
   @EventPattern('operation-created')
   async handleOperationEvent(@Payload() message: any) {
-    const data = JSON.parse(message.value);
+    const data = message.value;
     const { productId, quantity } = data;
 
     try {

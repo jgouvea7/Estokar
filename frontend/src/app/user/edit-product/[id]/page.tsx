@@ -96,7 +96,7 @@ export default function EditPage({ params }: PageProps) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Descrição"
             className="outline-none border rounded-md border-zinc-400 py-2 px-3 w-full h-28 resize-none"
-/>
+          />
           <div className="flex items-center justify-between w-full gap-4">
             <button
               type="submit"

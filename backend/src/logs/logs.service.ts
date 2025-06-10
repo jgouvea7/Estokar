@@ -33,8 +33,8 @@ export class LogsService {
     const response = await firstValueFrom(this.httpService.get(`http://localhost:3001/products/${data.productId}`));
     const product = response.data;
 
-    const stockBefore = product.stock - data.quantity;
-    const stockAfter = product.stock;
+    const stockBefore = product.stock;
+    const stockAfter = product.stock - data.quantity;
 
     return this.logSchema.create({
       operationId: data.operationId,

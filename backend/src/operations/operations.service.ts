@@ -22,6 +22,7 @@ export class OperationsService {
 
   async operationProduct(createOperationDto: CreateOperationDto){
 
+    console.log('Criando operação para produto:', createOperationDto.productId, 'quantidade:', createOperationDto.quantity);
     const operation = await this.operationSchema.create({
       userId: createOperationDto.userId,
       productId: createOperationDto.productId,
@@ -43,15 +44,16 @@ export class OperationsService {
   }
 
   async validateOperation(productId: string, quantity: number) {
-    const response = await firstValueFrom(
-      this.httpService.get(`http://localhost:3001/products/${productId}`)
-    )
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(`http://localhost:3001/products/${productId}`)
+      );
 
-    const product = response.data;
+      const product = response.data;
 
-    if (product.stock > quantity) {
-      return true;
-    } else {
+      return product.stock >= quantity;
+    } catch (error) {
+      console.error('Erro ao validar operação:', error.message);
       return false;
     }
   }

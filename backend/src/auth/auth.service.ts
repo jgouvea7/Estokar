@@ -27,11 +27,11 @@ export class AuthService {
     }
 
     const match = await bcrypt.compare(password, user.password)
-    if (match) {
-      return await this.generatedToken({ email: user.email, id: user.id });
+    if (!match) {
+      throw new UnauthorizedException("Email or password incorrect");
     }
 
-    throw new UnauthorizedException("Email or password incorrect")
+    return user;
 
   }
 

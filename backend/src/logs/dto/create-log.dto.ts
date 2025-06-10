@@ -12,6 +12,7 @@ export class CreateLogDto {
     operationId?: string;
     userId: string;
     product: string;
+    name: string;
     stockBefore: number;
     stockAfter: number;
     typeLog: TypeLog

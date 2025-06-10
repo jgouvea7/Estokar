@@ -56,7 +56,7 @@ export default function LogsPage() {
         {logs.length === 0 ? (
           <p>Nenhum log encontrado.</p>
         ) : (
-          <ul className="space-y-4">
+          <ul className="space-y-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {logs.map((log) => (
               <li
                 key={log._id}
@@ -64,7 +64,6 @@ export default function LogsPage() {
               >
                 <p><strong>Tipo:</strong> {log.typeLog}</p>
                 <p><strong>Data:</strong> {new Date(log.createdAt).toLocaleString()}</p>
-                {log.productId && <p><strong>Produto ID:</strong> {log.productId}</p>}
                 {log.name && <p><strong>Nome:</strong> {log.name}</p>}
                 {log.description && <p><strong>Descrição:</strong> {log.description}</p>}
                 {log.stockBefore !== undefined && log.stockAfter !== undefined && (

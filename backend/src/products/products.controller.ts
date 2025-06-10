@@ -4,6 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { KafkaMessage } from 'kafkajs';
 
 
 @Controller('products')
@@ -65,11 +66,34 @@ export class ProductsController {
     return this.productsService.remove(id, userId);
   }
 
-  @EventPattern('operation-created')
-  async handleOperationCreated(@Payload() message: any) {
-    
-    const result = await this.productsService.decreaseStock(message.productId, message.quantity)
+  @Get('dashboard')
+  async getDashboardSummary() {
+    return this.productsService.getDashboardSummary();
+  } 
 
+  @EventPattern('operation-created')
+  async handleOperationCreated(@Payload() message: KafkaMessage) {
+  try {
+    const raw = message.value?.toString();
+
+    if (!raw) {
+      throw new Error('Mensagem Kafka vazia ou inválida');
+    }
+
+    const data = JSON.parse(raw);
+    console.log('Mensagem recebida do Kafka:', data);
+
+    const { productId, quantity } = data;
+
+    const result = await this.productsService.decreaseStock(productId, quantity);
+
+    console.log('Estoque atualizado com sucesso');
     return result;
+
+  } catch (error) {
+    console.error('Erro ao processar mensagem do Kafka:', error.message);
   }
+}
+
+
 }
