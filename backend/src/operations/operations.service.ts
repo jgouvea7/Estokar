@@ -21,8 +21,6 @@ export class OperationsService {
   }
 
   async operationProduct(createOperationDto: CreateOperationDto){
-
-    console.log('Criando operação para produto:', createOperationDto.productId, 'quantidade:', createOperationDto.quantity);
     const operation = await this.operationSchema.create({
       userId: createOperationDto.userId,
       productId: createOperationDto.productId,

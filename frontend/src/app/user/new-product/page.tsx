@@ -56,6 +56,7 @@ export default function NewProductPage() {
                         type="number"
                         name="stock"
                         value={stock}
+                        min={0}
                         onChange={(e) => setStock(e.target.value)}
                         placeholder="Estoque"
                         className="outline-none border rounded-md border-zinc-400 py-2 px-3 w-30"

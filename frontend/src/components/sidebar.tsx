@@ -58,10 +58,45 @@ export default function SideBar() {
     router.push("/auth/login");
   }
 
+  function MenuItem({
+    href,
+    icon,
+    label,
+  }: {
+    href: string;
+    icon: string;
+    label: string;
+  }) {
+    return (
+      <Link href={href} className="flex items-center cursor-pointer hover:bg-cyan-800 p-1.5 rounded">
+        <span className="material-icons text-[34px] flex-shrink-0">{icon}</span>
+        <div
+          style={{
+            width: isCollapsed ? 0 : 140,
+            overflow: "hidden",
+            transition: "width 0.5s ease",
+            marginLeft: isCollapsed ? 0 : 10,
+          }}
+        >
+          <span
+            style={{
+              opacity: isCollapsed ? 0 : 1,
+              whiteSpace: "nowrap",
+              display: "inline-block",
+              transition: "opacity 0.5s ease",
+            }}
+          >
+            {label}
+          </span>
+        </div>
+      </Link>
+    );
+  }
+
   return (
     <aside
-      className={`fixed left-0 top-0 h-screen bg-blue-500 text-white transition-all duration-300 flex flex-col justify-between z-10 ${
-        isCollapsed ? "w-16" : "w-60"
+      className={`fixed left-0 top-0 h-screen bg-cyan-900 text-white transition-all duration-300 flex flex-col justify-between z-10 ${
+        isCollapsed ? "w-16" : "w-56"
       }`}
     >
       <div>
@@ -69,10 +104,9 @@ export default function SideBar() {
           {!isCollapsed && <h1 className="text-xl font-bold">Menu</h1>}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`text-sm px-1 py-1 rounded hover:bg-blue-400 flex items-center ${
-              isCollapsed ? "justify-center w-full" : ""
-            }`}
+            className={`text-sm px-1 py-1 rounded hover:bg-cyan-800 flex items-center`}
             aria-label="Toggle menu"
+            type="button"
           >
             <span className="material-icons text-[32px]">
               {isCollapsed ? "menu" : "close"}
@@ -82,121 +116,80 @@ export default function SideBar() {
 
         <nav className="p-4">
           <ul>
-            <li
-              className={`hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
-                isCollapsed ? "justify-center" : "gap-3"
-              }`}
-            >
-              <Link
-                href="/user/home"
-                className={`flex items-center ${
-                  isCollapsed ? "justify-center w-full" : "gap-3"
-                }`}
-              >
-                <span className="material-icons text-[34px]">home</span>
-                {!isCollapsed && <span>Início</span>}
-              </Link>
-            </li>
+            <MenuItem href="/user/home" icon="home" label="Início" />
           </ul>
         </nav>
 
         <nav className="p-4">
           <ul>
-            <li
-              className={`hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
-                isCollapsed ? "justify-center" : "gap-3"
-              }`}
-            >
-              <Link
-                href="/user/operation"
-                className={`flex items-center ${
-                  isCollapsed ? "justify-center w-full" : "gap-3"
-                }`}
-              >
-                <span className="material-icons text-[34px]">store</span>
-                {!isCollapsed && <span>Operação</span>}
-              </Link>
-            </li>
-          </ul>          
+            <MenuItem href="/user/update-stock" icon="autorenew" label="Atualizar estoque" />
+          </ul>
         </nav>
 
         <nav className="p-4">
           <ul>
-            <li
-              className={`hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
-                isCollapsed ? "justify-center" : "gap-3"
-              }`}
-            >
-              <Link
-                href="/user/stock"
-                className={`flex items-center ${
-                  isCollapsed ? "justify-center w-full" : "gap-3"
-                }`}
-              >
-                <span className="material-icons text-[34px]">inventory</span>
-                {!isCollapsed && <span>Estoque</span>}
-              </Link>
-            </li>
-          </ul>          
+            <MenuItem href="/user/stock" icon="inventory" label="Estoque" />
+          </ul>
         </nav>
 
         <nav className="p-4">
           <ul>
-            <li
-              className={`mb-2 hover:bg-blue-400 p-2 rounded cursor-pointer flex items-center ${
-                isCollapsed ? "justify-center" : "gap-3"
-              }`}
-            >
-              <Link
-                href="/user/logs"
-                className={`flex items-center ${
-                  isCollapsed ? "justify-center w-full" : "gap-3"
-                }`}
-              >
-                <span className="material-icons text-[34px]">description</span>
-                {!isCollapsed && <span>Logs</span>}
-              </Link>
-            </li>
-          </ul>          
+            <MenuItem href="/user/logs" icon="description" label="Logs" />
+          </ul>
         </nav>
-        
       </div>
 
       <div className="relative p-4" ref={configRef}>
         <button
           onClick={() => setIsConfigOpen(!isConfigOpen)}
-          className={`w-full hover:bg-blue-400 px-2 py-2 rounded flex items-center ${
-            isCollapsed ? "justify-center" : "gap-3"
-          }`}
+          className="w-full hover:bg-cyan-800 px-1 py-1 rounded flex items-center"
           aria-haspopup="true"
           aria-expanded={isConfigOpen}
+          type="button"
         >
-          <span className="material-icons text-[32px]">settings</span>
-          {!isCollapsed && <span>Configurações</span>}
+          <span className="material-icons">settings</span>
+          <span
+            style={{
+              maxWidth: isCollapsed ? 0 : 110,
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              marginLeft: isCollapsed ? 0 : 10,
+              transition:
+                "max-width 0.5s ease, margin-left 0.5s ease, opacity 0.5s ease",
+              opacity: isCollapsed ? 0 : 1,
+              display: "inline-block",
+            }}
+          >
+            Configurações
+          </span>
         </button>
 
         {isConfigOpen && (
-          <ul
-            className={`absolute bg-blue-500 border border-amber-50 rounded shadow-lg z-30
-            ${isCollapsed ? "left-14 bottom-12 w-48" : "left-4 bottom-13 w-[85%]"}`}
-          >
-            <li className="hover:bg-blue-400 p-2 rounded cursor-pointer">
-              <Link href="/configuracoes">Configurações</Link>
-            </li>
-            <li className="hover:bg-blue-400 p-2 rounded cursor-pointer">
-              <Link href="/perfil">Perfil</Link>
-            </li>
-            <li
-              onClick={logout}
-              className="hover:bg-blue-400 p-2 rounded cursor-pointer"
+           <ul
+              className={`absolute bg-cyan-900 border border-cyan-900 rounded shadow-lg z-30
+              ${isCollapsed ? "left-14 bottom-12 w-48" : "left-4 bottom-13 w-[85%]"}`}
             >
-              Sair
-            </li>
-          </ul>
+              <Link href="/user/config" className="flex items-center hover:bg-cyan-800 p-2 rounded cursor-pointer">
+                <span className="material-icons text-[34px] flex-shrink-0">info</span>
+                <span className="ml-3">Geral</span>
+              </Link>
+
+              <Link href="/user/profile" className="flex items-center hover:bg-cyan-800 p-2 rounded cursor-pointer">
+                <span className="material-icons text-[34px] flex-shrink-0">person</span>
+                <span className="ml-3">Perfil</span>
+              </Link>
+
+              <li
+                onClick={logout}
+                className="flex items-center hover:bg-cyan-800 p-2 rounded cursor-pointer text-red-500"
+                style={{ gap: "10px", cursor: "pointer" }}
+              >
+                <span className="material-icons text-[34px] flex-shrink-0">logout</span>
+                <span>Sair</span>
+              </li>
+            </ul>
         )}
       </div>
     </aside>
-    
-    
   );
 }
