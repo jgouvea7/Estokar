@@ -53,7 +53,7 @@ export class ProductsService {
     const product = await this.productSchema.findById(id);
     
     if(!product){
-      throw new NotFoundException("Product not found");
+      throw new NotFoundException("Produto não encontrado");
     }
 
     const changes: Record<string, {old: any; new: any}> = {};
@@ -85,7 +85,7 @@ export class ProductsService {
     const product = await this.productSchema.findById(id)
 
     if (!product) {
-      throw new NotFoundException("Product not found")
+      throw new NotFoundException("Produto não encontrado")
     }
 
     const newStock = updateProductDto.stock;
@@ -140,7 +140,7 @@ export class ProductsService {
     const product = await this.productSchema.findById(id)
 
     if (!product){
-      throw new NotFoundException("Product not found");
+      throw new NotFoundException("Produto não encontrado");
     }
 
     const newStock = product.stock - quantity

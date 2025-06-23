@@ -21,7 +21,6 @@ export class UsersService {
       name: createUserDto.name,
       email: createUserDto.email,
       password: hashed_password,
-      bornDate: createUserDto.bornDate
     });
   }
 
@@ -44,7 +43,6 @@ export class UsersService {
           name: updateUserDto.name,
           email: updateUserDto.email,
           password: hashed_password,
-          bornDate: updateUserDto.bornDate
         },
       },
       { new: true }
@@ -53,5 +51,20 @@ export class UsersService {
 
   remove(id: number) {
     return this.userSchema.deleteOne({ _id: id });
+  }
+
+  async updatePassword(id: string, password: string ) {
+
+    const hashed_password = await bcrypt.hash(password, 12)
+
+    return await this.userSchema.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          password: hashed_password,
+        }
+      },
+      { new: true }
+    )
   }
 }

@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { OperationsModule } from './operations/operations.module';
 import { AuthModule } from './auth/auth.module';
 import { LogsModule } from './logs/logs.module';
+import { PasswordResetModule } from './auth/repository/password-reset.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LogsModule } from './logs/logs.module';
     OperationsModule,
     AuthModule,
     LogsModule,
+    PasswordResetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
