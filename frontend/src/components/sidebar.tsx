@@ -141,7 +141,7 @@ export default function SideBar({ isCollapsed, setIsCollapsed }: SideBarProps) {
         <div className="relative p-4" ref={configRef}>
           <button
             onClick={() => setIsConfigOpen(!isConfigOpen)}
-            className="w-full hover:bg-sky-800 px-1 py-1 rounded flex items-center"
+            className="w-full hover:bg-sky-800 px-1 py-1 rounded flex items-center cursor-pointer"
             aria-haspopup="true"
             aria-expanded={isConfigOpen}
             type="button"

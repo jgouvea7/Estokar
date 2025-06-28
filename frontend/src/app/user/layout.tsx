@@ -15,7 +15,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       }
     }
 
-    handleResize(); // inicializa no mount
+    handleResize();
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
