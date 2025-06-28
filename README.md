@@ -36,8 +36,8 @@ npm run start
 
 ## Documentação específica
 
-- Para instruções detalhadas do backend, veja [`src/backend/README.md`](src/backend/README.md)
-- Para instruções detalhadas do frontend, veja [`src/frontend/README.md`](src/frontend/README.md)
+- Para instruções detalhadas do backend, veja [`backend/README.md`](backend/README.md)
+- Para instruções detalhadas do frontend, veja [`frontend/README.md`](frontend/README.md)
 
 ---
 
