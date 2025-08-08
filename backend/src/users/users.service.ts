@@ -13,9 +13,15 @@ export class UsersService {
     @InjectModel(User.name) private userSchema: Model<User>
   ){}
 
-  async create(createUserDto: CreateUserDto) {
 
-    const hashed_password = await bcrypt.hash(createUserDto.password, 12)
+  async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 12);
+  }
+
+
+  async createUser(createUserDto: CreateUserDto) {
+
+    const hashed_password = await this.hashPassword(createUserDto.password)
 
     return await this.userSchema.create({
       name: createUserDto.name,
@@ -24,17 +30,20 @@ export class UsersService {
     });
   }
 
+  
   findAll() {
     return this.userSchema.find();
   }
 
-  findOne(email: string) {
+
+  findOneByEmail(email: string) {
     return this.userSchema.findOne({ email: email });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
 
-    const hashed_password = await bcrypt.hash(updateUserDto.password)
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+
+    const hashed_password = await this.hashPassword(updateUserDto.password)
 
     return await this.userSchema.findByIdAndUpdate(
       { _id: id },
@@ -48,14 +57,11 @@ export class UsersService {
       { new: true }
     );
   }
-
-  remove(id: number) {
-    return this.userSchema.deleteOne({ _id: id });
-  }
+  
 
   async updatePassword(id: string, password: string ) {
 
-    const hashed_password = await bcrypt.hash(password, 12)
+    const hashed_password = await this.hashPassword(password)
 
     return await this.userSchema.findByIdAndUpdate(
       id,
@@ -67,4 +73,12 @@ export class UsersService {
       { new: true }
     )
   }
+
+
+  deleteUserById(id: string) {
+    return this.userSchema.findByIdAndDelete(id);
+  }
+
+
+
 }

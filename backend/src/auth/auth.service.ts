@@ -36,9 +36,10 @@ export class AuthService {
   }
 
   async generatedToken(payload: JwtPayloadDto) {
+    console.log(payload)
     return {
       access_token: this.jwtService.sign(
-        { email: payload.email, sub: payload.id },
+        { email: payload.email, sub: payload._id },
         {
           secret: 'secretPassword',
         }

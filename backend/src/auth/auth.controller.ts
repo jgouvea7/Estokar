@@ -12,7 +12,7 @@ export class AuthController {
   async login(@Request() req) {
     return this.authService.generatedToken({
       email: req.user.email,
-      id: req.user._id,
+      _id: req.user._id,
     });
   }
 
