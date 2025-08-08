@@ -15,7 +15,7 @@ export class ProductsController {
   @Post()
   create(@Body() createProductDto: CreateProductDto, @Req() req) {
     const userId = req.user.userId
-    return this.productsService.create({ ...createProductDto, userId });
+    return this.productsService.createProduct({ ...createProductDto, userId });
   }
 
   @Get('/all')
@@ -32,7 +32,7 @@ export class ProductsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productsService.findOne(id);
+    return this.productsService.findOneById(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -63,7 +63,7 @@ export class ProductsController {
          @Req() req
   ) {
     const userId = req.user.userId;
-    return this.productsService.remove(id, userId);
+    return this.productsService.deleteProduct(id, userId);
   }
 
   @Get('dashboard')

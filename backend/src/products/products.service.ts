@@ -14,7 +14,22 @@ export class ProductsService {
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ){}
 
-  async create(createProductDto: CreateProductDto) {
+  async getDashboardSummary(){
+
+    const product = await this.findAll()
+
+    const totalProducts = product.length;
+    const totalStock = product.reduce((sum, p) => sum + p.stock, 0);
+    const outOfStock = product.filter(p => p.stock === 0).length;
+
+    return {
+      totalProducts,
+      totalStock,
+      outOfStock,
+    };
+  }
+
+  async createProduct(createProductDto: CreateProductDto) {
 
     const createdProduct = await this.productSchema.create({
       userId: createProductDto.userId,
@@ -37,20 +52,24 @@ export class ProductsService {
     return createdProduct;
   }
 
+
   findAll() {
     return this.productSchema.find();
   }
+
 
   findByUser(userId: string){
     return this.productSchema.find({ userId })
   }
 
-  findOne(id: string) {
+
+  findOneById(id: string) {
     return this.productSchema.findById({ _id: id });
   }
 
+
   async updateProduct(id: string, updateProductDto: UpdateProductDto) {
-    const product = await this.productSchema.findById(id);
+    const product = await this.findOneById(id);
     
     if(!product){
       throw new NotFoundException("Produto não encontrado");
@@ -60,6 +79,7 @@ export class ProductsService {
     if (updateProductDto.name && updateProductDto.name !== product.name) {
       changes.name = { old: product.name, new: updateProductDto.name};
     }
+
     if (updateProductDto.description && updateProductDto.description !== product.description) {
       changes.description = { old: product.description, new: updateProductDto.description };
     }
@@ -76,13 +96,13 @@ export class ProductsService {
         })
       });
     }
-
     return updateProduct;
   }
 
+
   async updateStock(id: string, updateProductDto: UpdateProductDto){
 
-    const product = await this.productSchema.findById(id)
+    const product = await this.findOneById(id)
 
     if (!product) {
       throw new NotFoundException("Produto não encontrado")
@@ -118,26 +138,10 @@ export class ProductsService {
     return updateStock;
   }
 
-  async remove(productId: string, userId: string) {
-    const deleteProduct = await this.productSchema.findByIdAndDelete({
-      _id: productId,
-      userId: userId,
-    });
-
-    this.kafkaClient.emit('product-deleted', {
-      value: JSON.stringify({
-        productId: productId,
-        userId: userId,
-        typeDelete: 'DELETE'
-      })
-    })
-
-    return deleteProduct;
-  }
 
   async decreaseStock(id: string, quantity: number){
 
-    const product = await this.productSchema.findById(id)
+    const product = await this.findOneById(id)
 
     if (!product){
       throw new NotFoundException("Produto não encontrado");
@@ -156,20 +160,23 @@ export class ProductsService {
     )
     return result;
   }
+
   
-  async getDashboardSummary(){
+  async deleteProduct(productId: string, userId: string) {
+    const deleteProduct = await this.productSchema.findByIdAndDelete({
+      _id: productId,
+      userId: userId,
+    });
 
-    const product = await this.productSchema.find()
+    this.kafkaClient.emit('product-deleted', {
+      value: JSON.stringify({
+        productId: productId,
+        userId: userId,
+        typeDelete: 'DELETE'
+      })
+    })
 
-    const totalProducts = product.length;
-    const totalStock = product.reduce((sum, p) => sum + p.stock, 0);
-    const outOfStock = product.filter(p => p.stock === 0).length;
-
-    return {
-      totalProducts,
-      totalStock,
-      outOfStock,
-    };
+    return deleteProduct;
   }
 
 }
